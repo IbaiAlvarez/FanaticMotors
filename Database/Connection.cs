@@ -11,17 +11,11 @@ namespace FanaticMotors.Database
     public class Connection : INotifyPropertyChanged
     {
         #region PropertyChanged
-        event PropertyChangedEventHandler? INotifyPropertyChanged.PropertyChanged
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-            remove
-            {
-                throw new NotImplementedException();
-            }
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
 
