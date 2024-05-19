@@ -7,34 +7,98 @@
         xmlns:local="clr-namespace:FanaticMotors"
         mc:Ignorable="d" Height="800" Width="1200" FontSize="12" WindowState="Maximized">
     <DockPanel Background="#343333">
-        <Border CornerRadius="6" Background="#FB5050" Height="400" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>                    
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" TextAlignment="Center" FontSize="25" FontWeight="Bold" Margin="0,40,0,0">LOGIN</TextBlock>
-                <StackPanel Grid.Row="1">
-                    <xctk:WatermarkTextBox Watermark="User" Text="{Binding UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200" Padding="5"/>
-                    <xctk:WatermarkPasswordBox Watermark="Password" Text="{Binding UserPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200" Padding="5" Margin="0,20,0,0"/>
-               </StackPanel>
-                <StackPanel Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,80">
-                    <Button  Click="VerifyLogin_Click" Width="130">LOGIN</Button>                    
-                    <TextBlock Text="{Binding LoginMessage,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontWeight="Bold" Margin="0,7,0,0">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}">
-                                <Setter Property="Visibility" Value="Visible"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding LoginMessage}" Value="{x:Null}">
-                                        <Setter Property="Visibility" Value="Hidden"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                </StackPanel>
-            </Grid>
+        <Border CornerRadius="6" Background="#FB5050" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Border.Style>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="Height" Value="400"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Login}" Value="False">
+                            <Setter Property="Height" Value="450"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <StackPanel>
+                <Grid HorizontalAlignment="Center" Width="600" Height="400">
+                    <Grid.Style>
+                        <Style TargetType="{x:Type Grid}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Login}" Value="False">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" TextAlignment="Center" FontSize="25" FontWeight="Bold" Margin="0,40,0,0">LOGIN</TextBlock>
+                    <StackPanel Grid.Row="1">
+                        <xctk:WatermarkTextBox Watermark="User" Text="{Binding UserNickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200" Padding="5"/>
+                        <xctk:WatermarkPasswordBox Watermark="Password" Text="{Binding UserPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200" Padding="5" Margin="0,20,0,0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,60">
+                        <Button  Click="VerifyLogin_Click" Width="130" Padding="3">Login</Button>
+                        <TextBlock Text="I don't have an account." Margin="0,5,0,3" Foreground="Blue" FontWeight="Bold" FontSize="10" TextAlignment="Center" MouseLeftButtonUp="ChangeLogin_Click"/>
+                        <TextBlock Text="{Binding LoginMessage,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontWeight="Bold" Margin="0,7,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding LoginMessage}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Hidden"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+                <Grid x:Name="GridSignIn" HorizontalAlignment="Center" Width="600">
+                    <Grid.Style>
+                        <Style TargetType="{x:Type Grid}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Login}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="90"/>
+                        <RowDefinition Height="250"/>
+                        <RowDefinition Height="70"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" TextAlignment="Center" FontSize="25" FontWeight="Bold" Margin="0,40,0,0">SIGN IN</TextBlock>
+                    <StackPanel Grid.Row="1">
+                        <xctk:WatermarkTextBox Watermark="Name" Text="{Binding UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200" Padding="5" Margin="0,15,0,0"/>
+                        <xctk:WatermarkTextBox Watermark="Surname" Text="{Binding Surname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200" Padding="5" Margin="0,15,0,0"/>
+                        <xctk:WatermarkTextBox Watermark="Birth Date" Text="{Binding BirthDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200" Padding="5" Margin="0,15,0,0"/>
+                        <xctk:WatermarkTextBox Watermark="User" Text="{Binding UserNickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200" Padding="5" Margin="0,15,0,0"/>
+                        <xctk:WatermarkPasswordBox Watermark="Password" Text="{Binding UserPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200" Padding="5" Margin="0,15,0,0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Button  Click="VerifyLogin_Click" Width="130">Sign In</Button>
+                        <TextBlock Text="I already have an account." Margin="0,5,0,3" Foreground="Blue" FontWeight="Bold" FontSize="10" TextAlignment="Center" MouseLeftButtonUp="ChangeLogin_Click"/>
+                        <TextBlock Text="{Binding LoginMessage,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontWeight="Bold" Margin="0,7,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding LoginMessage}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Hidden"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
         </Border>
     </DockPanel>
 </Window>

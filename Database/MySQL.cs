@@ -40,15 +40,38 @@ namespace FanaticMotors.Database
             Query = query;
             DataTable dt = new DataTable();
 
-            MySqlCommand mysqlcommand = new MySqlCommand(Query, MySQLconnection);
-            MySQLconnection.Open();
-            mysqlcommand.ExecuteNonQuery();
-            dt.Load(mysqlcommand.ExecuteReader());
-
+            try
+            {
+                MySQLconnection.Open();
+                MySqlCommand mysqlcommand = new MySqlCommand(Query, MySQLconnection);
+                dt.Load(mysqlcommand.ExecuteReader());
+            }catch (Exception ex) 
+            { 
+            }
             MySQLconnection.Close();
 
             return dt;
         }
-        
+
+        public bool InsertQuery(String query)
+        {
+            Query = query;
+            bool executed = false;
+            try
+            {
+                MySQLconnection.Open();
+                MySqlCommand mysqlcommand = new MySqlCommand(Query, MySQLconnection);
+                mysqlcommand.ExecuteNonQuery(); 
+                executed = true;
+            }
+            catch(Exception ex) 
+            { 
+            }
+
+            MySQLconnection.Close();
+
+            return executed;
+        }
+
     }
 }

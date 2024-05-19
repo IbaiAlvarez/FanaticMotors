@@ -44,8 +44,12 @@ namespace FanaticMotors
 
         private String _userName = string.Empty;
         private String _userPassword = string.Empty;
+        private String _userNickName = string.Empty;
+        private String _surname = string.Empty;
+        private String _birthDate = string.Empty;
 
         private String _loginMessage = string.Empty;
+        private bool _login = true;
         #endregion
 
 
@@ -55,7 +59,13 @@ namespace FanaticMotors
         public string UserPassword { get => _userPassword; set { _userPassword = value; OnPropertyChanged(Internal.Method()); } }
 
         public string LoginMessage { get => _loginMessage; set { _loginMessage = value; OnPropertyChanged(Internal.Method()); } }
-    
+
+        public bool Login { get => _login; set { _login = value; OnPropertyChanged(Internal.Method()); } }
+
+        public string UserNickName { get => _userNickName; set { _userNickName = value; OnPropertyChanged(Internal.Method()); } }
+        public string Surname { get => _surname; set { _surname = value; OnPropertyChanged(Internal.Method()); } }
+        public string BirthDate { get => _birthDate; set { _birthDate = value; OnPropertyChanged(Internal.Method()); } }
+
         #endregion
 
         public MainWindow()
@@ -114,7 +124,7 @@ namespace FanaticMotors
 
         private void VerifyLogin_Click(object sender, RoutedEventArgs e)
         {
-            if(!String.IsNullOrEmpty(UserName) && !String.IsNullOrEmpty(UserPassword))
+            if(!String.IsNullOrEmpty(UserNickName) && !String.IsNullOrEmpty(UserPassword) && Login)
             {
                 try
                 {
@@ -123,17 +133,17 @@ namespace FanaticMotors
                     var hashed = hasher.ComputeHash(unhashed);
                     var hashedPassword2 = Convert.ToBase64String(hashed);
 
-                    DataTable dt = MySQL.MakeQuery($"SELECT user_kind FROM users WHERE user_id='{UserName}' AND user_password='{hashedPassword2}';");
+                    DataTable dt = MySQL.MakeQuery($"SELECT user_kind FROM users WHERE user_id='{UserNickName}' AND user_password='{hashedPassword2}';");
 
                     String kind = Convert.ToString(dt.Rows[0]["user_kind"]);
 
                     if (kind.Equals("admin")) {
-                        AdminWindow adminWindow = new AdminWindow(UserName);
+                        AdminWindow adminWindow = new AdminWindow(UserNickName);
                         this.Close();
                         adminWindow.ShowDialog();
                     }
                     else if (kind.Equals("admin")) {
-                        UserWindow userWindow = new UserWindow(UserName);
+                        UserWindow userWindow = new UserWindow(UserNickName);
                         this.Close();
                         userWindow.ShowDialog();
                     }
@@ -142,8 +152,32 @@ namespace FanaticMotors
                 {
                     LoginMessage = "Incorrect user or password.";
                 }
+            }else if(!Login && !String.IsNullOrEmpty(UserName) && !String.IsNullOrEmpty(UserPassword) && !String.IsNullOrEmpty(BirthDate) && !String.IsNullOrEmpty(Surname) && !String.IsNullOrEmpty(UserNickName))
+            {
+                var hasher = new SHA256Managed();
+                var unhashed = System.Text.Encoding.Unicode.GetBytes(UserPassword);
+                var hashed = hasher.ComputeHash(unhashed);
+                var hashedPassword2 = Convert.ToBase64String(hashed);
+
+                MySQL.InsertQuery($"INSERT INTO users (user_id,user_name,user_surnames,user_date,user_password) VALUES ('{UserNickName}','{UserName}','{Surname}','{BirthDate}','{hashedPassword2}');");
+
+            }
+            else
+            {
+                LoginMessage = "You must fill all the sections.";
             }
 
+        }
+
+        private void ChangeLogin_Click(object sender, MouseButtonEventArgs e)
+        {
+            Login = !Login;
+            LoginMessage = string.Empty;
+            Name = string.Empty;
+            Surname = string.Empty;
+            BirthDate = string.Empty;
+            UserPassword = string.Empty;
+            UserName = string.Empty;
         }
     }
 }

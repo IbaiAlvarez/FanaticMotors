@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace FanaticMotors.Shared
 {
     public class Internal
-    {        
+    {
         //Gets the caller methods name
         public static string Method()
         {
