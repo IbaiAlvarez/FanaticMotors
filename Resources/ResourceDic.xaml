@@ -1,0 +1,10 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:FanaticMotors.Resources">
+
+
+    <BitmapImage x:Key="CAR_ICON" UriSource="Images/race_car.png" />
+    <BitmapImage x:Key="USUARIO" UriSource="Images/usuario.png" />
+    <BitmapImage x:Key="USUARIO1" UriSource="Images/usuario1.png" />
+
+</ResourceDictionary> 

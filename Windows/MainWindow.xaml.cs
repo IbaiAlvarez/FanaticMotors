@@ -1,28 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using MySqlConnector;
 using FanaticMotors.Database;
-using XSystem.Security.Cryptography;
 using System.Data;
-using System.Security.Policy;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using FanaticMotors.Windows;
-using FanaticMotors.Shared;
+using System.Configuration;
+using Shared;
+using System.Globalization;
+using System.Windows.Data;
+using XAct;
 
-namespace FanaticMotors
+namespace FanaticMotors.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -32,7 +21,7 @@ namespace FanaticMotors
         #region PropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OnPropertyChanged(string propertyName)
+        private void OnPropertyChanged([CallerMemberName]string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -50,21 +39,27 @@ namespace FanaticMotors
 
         private String _loginMessage = string.Empty;
         private bool _login = true;
+        private bool _isPasswordVisible = false;
+        private bool _rememberLogin = false;
         #endregion
 
 
         #region Private Attributes
-        public MySQL MySQL { get => _mySQL; set { _mySQL = value; OnPropertyChanged(Internal.Method()); } }
-        public string UserName { get => _userName; set { _userName = value; OnPropertyChanged(Internal.Method()); } }
-        public string UserPassword { get => _userPassword; set { _userPassword = value; OnPropertyChanged(Internal.Method()); } }
+        public MySQL MySQL { get => _mySQL; set { _mySQL = value; OnPropertyChanged(); } }
+        public string UserName { get => _userName; set { _userName = value; OnPropertyChanged(); } }
+        public string UserPassword { get => _userPassword; set { _userPassword = value; OnPropertyChanged(); } }
 
-        public string LoginMessage { get => _loginMessage; set { _loginMessage = value; OnPropertyChanged(Internal.Method()); } }
+        public string LoginMessage { get => _loginMessage; set { _loginMessage = value; OnPropertyChanged(); } }
 
-        public bool Login { get => _login; set { _login = value; OnPropertyChanged(Internal.Method()); } }
+        public bool Login { get => _login; set { _login = value; OnPropertyChanged(); } }
 
-        public string UserNickName { get => _userNickName; set { _userNickName = value; OnPropertyChanged(Internal.Method()); } }
-        public string Surname { get => _surname; set { _surname = value; OnPropertyChanged(Internal.Method()); } }
-        public string BirthDate { get => _birthDate; set { _birthDate = value; OnPropertyChanged(Internal.Method()); } }
+        public string UserNickName { get => _userNickName; set { _userNickName = value; OnPropertyChanged(); } }
+        public string Surname { get => _surname; set { _surname = value; OnPropertyChanged(); } }
+        public string BirthDate { get => _birthDate; set { _birthDate = value; OnPropertyChanged(); } }
+
+        public bool IsPasswordVisible { get => _isPasswordVisible; set { _isPasswordVisible = value; OnPropertyChanged(); } }
+
+        public bool RememberLogin { get => _rememberLogin; set { _rememberLogin = value; OnPropertyChanged(); } }
 
         #endregion
 
@@ -72,63 +67,19 @@ namespace FanaticMotors
         {
             DataContext = this;
             InitializeComponent();
-            //Prueba();
+            LoadCredentials();
         }
 
-
-        public void Prueba()
+        public void VerifyLogin()
         {
-            try
-            {
-                DataTable dt = new DataTable();
-
-                //Codify password
-                /*
-                var hasher = new SHA256Managed();
-                var unhashed = System.Text.Encoding.Unicode.GetBytes("pass");
-                var hashed = hasher.ComputeHash(unhashed);
-                var hashedPassword = Convert.ToBase64String(hashed);
-
-                Connection con = new Connection();
-                MySqlConnection mysqlconnection = new MySqlConnection(con.ConnString);
-                MySqlCommand mysqlcommand = new MySqlCommand($"INSERT INTO users VALUES ('ibai.a','Ibai','Ibai Alvarez Hernando','2000-09-10','{hashedPassword}','admin');", mysqlconnection);
-                mysqlconnection.Open();
-                mysqlcommand.ExecuteNonQuery();
-
-
-                var hasher2 = new SHA256Managed();
-                var unhashed2 = System.Text.Encoding.Unicode.GetBytes("pass");
-                var hashed2 = hasher.ComputeHash(unhashed2);
-                var hashedPassword2 = Convert.ToBase64String(hashed2);
-
-                String query = $"SELECT COUNT(*) AS CANT FROM users WHERE user_id='ibai.a' AND user_password='{hashedPassword2}';";
-                mysqlcommand = new MySqlCommand(query, mysqlconnection);
-                dt.Load(mysqlcommand.ExecuteReader());
-                int cant = Convert.ToInt32(dt.Rows[0]["CANT"]);
-
-                mysqlconnection.Close();
-                */
-
-                var hasher2 = new SHA256Managed();
-                var unhashed2 = System.Text.Encoding.Unicode.GetBytes("pass");
-                var hashed2 = hasher2.ComputeHash(unhashed2);
-                var hashedPassword2 = Convert.ToBase64String(hashed2);
-
-                dt = MySQL.MakeQuery($"SELECT user_kind FROM users WHERE user_id='ibai.a' AND user_password='{hashedPassword2}';");
-
-                int cant = Convert.ToInt32(dt.Rows[0]["CANT"]);
-
-            }
-            catch(Exception ex) { }
-        }
-
-        private void VerifyLogin_Click(object sender, RoutedEventArgs e)
-        {
-            if(!String.IsNullOrEmpty(UserNickName) && !String.IsNullOrEmpty(UserPassword) && Login)
+            LoginMessage = string.Empty;
+            if (!String.IsNullOrEmpty(UserNickName) && !String.IsNullOrEmpty(UserPassword) && Login)
             {
                 try
                 {
-                    var hasher = new SHA256Managed();
+                    UserPassword = txt_pass_login.Password;
+
+                    var hasher = new XSystem.Security.Cryptography.SHA256Managed();
                     var unhashed = System.Text.Encoding.Unicode.GetBytes(UserPassword);
                     var hashed = hasher.ComputeHash(unhashed);
                     var hashedPassword2 = Convert.ToBase64String(hashed);
@@ -137,47 +88,137 @@ namespace FanaticMotors
 
                     String kind = Convert.ToString(dt.Rows[0]["user_kind"]);
 
-                    if (kind.Equals("admin")) {
+                    if (kind.Equals("admin"))
+                    {
+                        SaveCredentials();
                         AdminWindow adminWindow = new AdminWindow(UserNickName);
                         this.Close();
                         adminWindow.ShowDialog();
                     }
-                    else if (kind.Equals("admin")) {
+                    else if (kind.Equals("user"))
+                    {
+                        SaveCredentials();
                         UserWindow userWindow = new UserWindow(UserNickName);
                         this.Close();
                         userWindow.ShowDialog();
                     }
                 }
-                catch(Exception ex) 
+                catch (Exception ex)
                 {
                     LoginMessage = "Incorrect user or password.";
                 }
-            }else if(!Login && !String.IsNullOrEmpty(UserName) && !String.IsNullOrEmpty(UserPassword) && !String.IsNullOrEmpty(BirthDate) && !String.IsNullOrEmpty(Surname) && !String.IsNullOrEmpty(UserNickName))
+            }
+            else if (!Login && !String.IsNullOrEmpty(UserName) && !String.IsNullOrEmpty(txt_pass_register.Password) && !String.IsNullOrEmpty(BirthDate) && !String.IsNullOrEmpty(Surname) && !String.IsNullOrEmpty(UserNickName))
             {
-                var hasher = new SHA256Managed();
+                UserPassword = txt_pass_register.Password;
+
+                var hasher = new XSystem.Security.Cryptography.SHA256Managed();
                 var unhashed = System.Text.Encoding.Unicode.GetBytes(UserPassword);
                 var hashed = hasher.ComputeHash(unhashed);
                 var hashedPassword2 = Convert.ToBase64String(hashed);
 
+                DateTime birthDate = DateTime.ParseExact(BirthDate, "dd/MM/yyyy", null);
+                BirthDate = birthDate.ToString("yyyy-MM-dd");
+
                 MySQL.InsertQuery($"INSERT INTO users (user_id,user_name,user_surnames,user_date,user_password) VALUES ('{UserNickName}','{UserName}','{Surname}','{BirthDate}','{hashedPassword2}');");
 
+                SaveCredentials();
+                Login = !Login;
+                LoginMessage = string.Empty;
+                UserName = string.Empty;
+                Surname = string.Empty;
+                BirthDate = string.Empty;
+                UserPassword = string.Empty;
+                LoginMessage = "Has been successfully registered!";
             }
             else
             {
                 LoginMessage = "You must fill all the sections.";
             }
+        }
 
+        private void VerifyLogin_Click(object sender, RoutedEventArgs e)
+        {
+            VerifyLogin();
         }
 
         private void ChangeLogin_Click(object sender, MouseButtonEventArgs e)
         {
             Login = !Login;
             LoginMessage = string.Empty;
-            Name = string.Empty;
+            UserName = string.Empty;
             Surname = string.Empty;
+            UserNickName = string.Empty;
             BirthDate = string.Empty;
             UserPassword = string.Empty;
-            UserName = string.Empty;
+        }
+
+        private void SaveCredentials()
+        {
+            Properties.Settings.Default.LOGGED_IN = true;
+            if (RememberLogin)
+            {
+                Properties.Settings.Default.LOGIN_USER = UserNickName;
+                Properties.Settings.Default.LOGIN_PASSWORD = Security.Encrypt(UserPassword);
+                Properties.Settings.Default.REMEMBER_CREDENTIALS = RememberLogin;
+                Properties.Settings.Default.Save();
+            }
+            else
+            {
+                Properties.Settings.Default.LOGIN_USER = string.Empty;
+                Properties.Settings.Default.LOGIN_PASSWORD = string.Empty;
+                Properties.Settings.Default.REMEMBER_CREDENTIALS = RememberLogin;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        private void LoadCredentials()
+        {
+            Properties.Settings.Default.LOGGED_IN = false;
+            UserNickName = Properties.Settings.Default.LOGIN_USER;
+            RememberLogin = Properties.Settings.Default.REMEMBER_CREDENTIALS;
+
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.LOGIN_PASSWORD))
+                txt_pass_login.Password = Security.Decrypt(Properties.Settings.Default.LOGIN_PASSWORD);
+        }
+
+        private void PreviewDown_Pass(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && !Properties.Settings.Default.LOGGED_IN)
+                VerifyLogin();
+            else
+                CheckPasswordText();
+        }
+
+        private void CheckPasswordText()
+        {
+            if (!IsPasswordVisible)
+                UserPassword = txt_pass_login.Password;
+            else
+                txt_pass_login.Password = UserPassword;
+        }
+
+        private void ShowHidePass_Click(object sender, RoutedEventArgs e)
+        {
+            CheckPasswordText();
+            IsPasswordVisible = !IsPasswordVisible;
+        }
+    }
+
+    public partial class StringToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string str && string.IsNullOrEmpty(str))
+            {
+                return Visibility.Visible;
+            }
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -5,8 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FanaticMotors.Windows"
         mc:Ignorable="d"
-        Title="AdminWindow" WindowState="Maximized" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="AdminWindow" WindowState="Maximized" Height="450" Width="800" Background="#343333">
+    <DockPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right" Width="200">
+                <TextBlock Text="{Binding Path=NickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="White" Width="100" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <Image Source="{StaticResource USUARIO}" Height="30"/>
+            </StackPanel>
+            
+            <Border Background="LightGreen" Grid.Row="1">
+            </Border>
+            
+        </Grid>
+    </DockPanel>
 </Window>

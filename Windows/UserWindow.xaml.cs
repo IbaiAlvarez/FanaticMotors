@@ -14,7 +14,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using FanaticMotors.Database;
-using FanaticMotors.Shared;
 
 namespace FanaticMotors.Windows
 {
@@ -26,7 +25,7 @@ namespace FanaticMotors.Windows
         #region PropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OnPropertyChanged(string propertyName)
+        private void OnPropertyChanged([CallerMemberName]string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -40,8 +39,8 @@ namespace FanaticMotors.Windows
 
 
         #region Private Attributes
-        public MySQL MySQL { get => _mySQL; set { _mySQL = value; OnPropertyChanged(Internal.Method()); } }
-        public string UserName { get => _userName; set { _userName = value; OnPropertyChanged(Internal.Method()); } }
+        public MySQL MySQL { get => _mySQL; set { _mySQL = value; OnPropertyChanged(); } }
+        public string UserName { get => _userName; set { _userName = value; OnPropertyChanged(); } }
 
         #endregion
 
