@@ -179,7 +179,10 @@ namespace FanaticMotors.Windows
             RememberLogin = Properties.Settings.Default.REMEMBER_CREDENTIALS;
 
             if (!String.IsNullOrEmpty(Properties.Settings.Default.LOGIN_PASSWORD))
+            {
                 txt_pass_login.Password = Security.Decrypt(Properties.Settings.Default.LOGIN_PASSWORD);
+                UserPassword = txt_pass_login.Password;
+            }
         }
 
         private void PreviewDown_Pass(object sender, KeyEventArgs e)

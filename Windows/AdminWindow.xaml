@@ -17,10 +17,21 @@
                 <TextBlock Text="{Binding Path=NickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="White" Width="100" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 <Image Source="{StaticResource USUARIO}" Height="30"/>
             </StackPanel>
-            
-            <Border Background="LightGreen" Grid.Row="1">
-            </Border>
-            
+            <TabControl Grid.Row="1" Background="Tomato" TabStripPlacement="Left">
+                <TabItem>
+                    <TabItem.Header>
+                        <DockPanel>
+                        <TextBlock Text="Add Pilot" FontSize="15" Padding="3"/>
+                        <Image Source="{StaticResource CAR_ICON}" Height="20"/>
+                        </DockPanel>
+                    </TabItem.Header>
+                    <TabItem.Content>
+                        <DockPanel>
+                            
+                        </DockPanel>
+                    </TabItem.Content>
+                </TabItem>
+            </TabControl>
         </Grid>
     </DockPanel>
 </Window>

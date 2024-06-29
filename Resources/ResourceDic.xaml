@@ -4,7 +4,7 @@
 
 
     <BitmapImage x:Key="CAR_ICON" UriSource="Images/race_car.png" />
-    <BitmapImage x:Key="USUARIO" UriSource="Images/usuario.png" />
-    <BitmapImage x:Key="USUARIO1" UriSource="Images/usuario1.png" />
+    <BitmapImage x:Key="USUARIO" UriSource="Images/USUARIO.png" />
+    <BitmapImage x:Key="USUARIO1" UriSource="Images/USUARIO_1.png" />
 
 </ResourceDictionary> 
