@@ -9,7 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
+    <None Remove="Resources\Images\race_car.png" />
+    <None Remove="Resources\Images\usuario.png" />
+    <None Remove="Resources\Images\USUARIO_1.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Pages\" />
   </ItemGroup>
 
@@ -19,6 +24,12 @@
     <PackageReference Include="Selenium.WebDriver" Version="4.21.0" />
     <PackageReference Include="System.Runtime.Caching" Version="8.0.0" />
     <PackageReference Include="XAct.Core.PCL" Version="0.0.5014" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Images\race_car.png" />
+    <Resource Include="Resources\Images\usuario.png" />
+    <Resource Include="Resources\Images\USUARIO_1.png" />
   </ItemGroup>
 
   <ItemGroup>

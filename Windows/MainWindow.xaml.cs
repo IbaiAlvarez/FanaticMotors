@@ -39,7 +39,7 @@ namespace FanaticMotors.Windows
 
         private String _loginMessage = string.Empty;
         private bool _login = true;
-        private bool _isPasswordVisible = false;
+        private bool _savePassword = false;
         private bool _rememberLogin = false;
         #endregion
 
@@ -57,7 +57,7 @@ namespace FanaticMotors.Windows
         public string Surname { get => _surname; set { _surname = value; OnPropertyChanged(); } }
         public string BirthDate { get => _birthDate; set { _birthDate = value; OnPropertyChanged(); } }
 
-        public bool IsPasswordVisible { get => _isPasswordVisible; set { _isPasswordVisible = value; OnPropertyChanged(); } }
+        public bool SavePassword { get => _savePassword; set { _savePassword = value; OnPropertyChanged(); } }
 
         public bool RememberLogin { get => _rememberLogin; set { _rememberLogin = value; OnPropertyChanged(); } }
 
@@ -68,11 +68,13 @@ namespace FanaticMotors.Windows
             DataContext = this;
             InitializeComponent();
             LoadCredentials();
+            this.Focus();
         }
 
         public void VerifyLogin()
         {
             LoginMessage = string.Empty;
+            UserPassword = txt_pass_login.Password;
             if (!String.IsNullOrEmpty(UserNickName) && !String.IsNullOrEmpty(UserPassword) && Login)
             {
                 try
@@ -84,7 +86,8 @@ namespace FanaticMotors.Windows
                     var hashed = hasher.ComputeHash(unhashed);
                     var hashedPassword2 = Convert.ToBase64String(hashed);
 
-                    DataTable dt = MySQL.MakeQuery($"SELECT user_kind FROM users WHERE user_id='{UserNickName}' AND user_password='{hashedPassword2}';");
+                    String query = $"SELECT user_kind FROM {MySQL.TABLE_USERS} WHERE user_id='{UserNickName}' AND user_password='{hashedPassword2}';";
+                    DataTable dt = MySQL.MakeQuery(query);
 
                     String kind = Convert.ToString(dt.Rows[0]["user_kind"]);
 
@@ -120,7 +123,7 @@ namespace FanaticMotors.Windows
                 DateTime birthDate = DateTime.ParseExact(BirthDate, "dd/MM/yyyy", null);
                 BirthDate = birthDate.ToString("yyyy-MM-dd");
 
-                MySQL.InsertQuery($"INSERT INTO users (user_id,user_name,user_surnames,user_date,user_password) VALUES ('{UserNickName}','{UserName}','{Surname}','{BirthDate}','{hashedPassword2}');");
+                MySQL.InsertQuery($"INSERT INTO {MySQL.TABLE_USERS} (user_id,user_name,user_surnames,user_date,user_password) VALUES ('{UserNickName}','{UserName}','{Surname}','{BirthDate}','{hashedPassword2}');");
 
                 SaveCredentials();
                 Login = !Login;
@@ -189,22 +192,19 @@ namespace FanaticMotors.Windows
         {
             if (e.Key == Key.Enter && !Properties.Settings.Default.LOGGED_IN)
                 VerifyLogin();
-            else
-                CheckPasswordText();
         }
 
         private void CheckPasswordText()
         {
-            if (!IsPasswordVisible)
+            if (!SavePassword)
                 UserPassword = txt_pass_login.Password;
             else
                 txt_pass_login.Password = UserPassword;
         }
 
-        private void ShowHidePass_Click(object sender, RoutedEventArgs e)
+        private void SaveLogin_Click(object sender, RoutedEventArgs e)
         {
-            CheckPasswordText();
-            IsPasswordVisible = !IsPasswordVisible;
+            SavePassword = !SavePassword;
         }
     }
 

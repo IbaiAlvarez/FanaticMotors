@@ -21,7 +21,7 @@ namespace FanaticMotors.Database
         #endregion
 
 
-        private static readonly string _connectionIp = "192.168.1.35";
+        private static readonly string _connectionIp = "192.168.56.1";
         private static readonly string _connectionPort = "3306";
         private static readonly string _databaseName = "fanaticMotors";
         private static readonly string _username = "admin";

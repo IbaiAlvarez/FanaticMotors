@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,6 +26,19 @@ namespace FanaticMotors.Database
         private String _query = string.Empty;
         private Connection connection = new Connection();
         private MySqlConnection mysqlconnection = new MySqlConnection();
+
+        #region TABLES
+
+        public readonly String TABLE_AWARDS = "awards";
+        public readonly String TABLE_AWARDTYPES = "award_types";
+        public readonly String TABLE_PILOTS = "pilots";
+        public readonly String TABLE_RACES = "races";
+        public readonly String TABLE_RESULTS = "results";
+        public readonly String TABLE_SEASONS = "seasons";
+        public readonly String TABLE_TEAMS = "teams";
+        public readonly String TABLE_USERS = "users";
+
+        #endregion
 
         public MySQL()
         {

@@ -3,31 +3,49 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:FanaticMotors.Windows"
         mc:Ignorable="d"
-        Title="AdminWindow" WindowState="Maximized" Height="450" Width="800" Background="#343333">
+        Title="AdminWindow" WindowState="Maximized" Height="1080" Width="1920" Background="#343333">
+    
     <DockPanel>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right" Width="200">
+            <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right" Width="200" VerticalAlignment="Center">
                 <TextBlock Text="{Binding Path=NickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="White" Width="100" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                <Image Source="{StaticResource USUARIO}" Height="30"/>
+                <Image Source="{StaticResource USUARIO}" Height="40"/>
             </StackPanel>
-            <TabControl Grid.Row="1" Background="Tomato" TabStripPlacement="Left">
+            <TabControl Grid.Row="1" Background="#EBE5E4" TabStripPlacement="Left">
                 <TabItem>
                     <TabItem.Header>
-                        <DockPanel>
-                        <TextBlock Text="Add Pilot" FontSize="15" Padding="3"/>
-                        <Image Source="{StaticResource CAR_ICON}" Height="20"/>
+                        <DockPanel Height="40">
+                            <TextBlock Text="Add Pilot" FontSize="15" Padding="3" VerticalAlignment="Center"/>
+                            <Image Source="{StaticResource CAR_ICON}" Height="30" VerticalAlignment="Center"/>
                         </DockPanel>
                     </TabItem.Header>
                     <TabItem.Content>
                         <DockPanel>
-                            
+                            <TextBlock Text="ADD NEW PILOT  " HorizontalAlignment="Center" DockPanel.Dock="Top" FontSize="26" FontWeight="Bold" Margin="0,20,0,0"/>
+                            <StackPanel Margin="0,80,0,0">
+                                <xctk:WatermarkTextBox Watermark="Name" Height="40" Text="{Binding PilotName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Width="300" Margin="0,10,0,0"/>
+                                <xctk:WatermarkTextBox Watermark="Surnames" Height="40" Text="{Binding PilotSurname, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  VerticalContentAlignment="Center" Width="300" Margin="0,20,0,0"/>
+                                <xctk:WatermarkTextBox Watermark="Number" Height="40" Text="{Binding PilotNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  VerticalContentAlignment="Center" Width="100" Margin="0,20,0,0"/>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,20,0,0" HorizontalAlignment="Center">
+                                    <xctk:WatermarkTextBox Watermark="Day" Height="40" KeyUp="CheckNumber_KeyUp" Tag="DAY"  VerticalContentAlignment="Center" Width="50" Margin="5"/>
+                                    <TextBlock Text="/" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="15"/>
+                                    <xctk:WatermarkTextBox Watermark="Month" Height="40" KeyUp="CheckNumber_KeyUp" Tag="MONTH" VerticalContentAlignment="Center" Width="50" Margin="5"/>
+                                    <TextBlock Text="/" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="15"/>
+                                    <xctk:WatermarkTextBox Watermark="Year" Height="40" KeyUp="CheckNumber_KeyUp" Tag="YEAR" VerticalContentAlignment="Center" Width="70" Margin="5"/>
+                                </StackPanel>
+
+                                <Button Click="SavePilot_Click" Width="120" Height="30" Margin="0,20,0,0" FontSize="16">Save Pilot</Button>
+                                
+                            </StackPanel>
                         </DockPanel>
                     </TabItem.Content>
                 </TabItem>

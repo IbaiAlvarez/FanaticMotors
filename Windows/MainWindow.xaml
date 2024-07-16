@@ -9,7 +9,8 @@
         Height="600"
         Width="500"
         FontSize="12"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        PreviewKeyDown="PreviewDown_Pass">
 
     <Window.Resources>
         <!-- Declaración del Convertidor -->
@@ -94,7 +95,7 @@
                     <StackPanel Grid.Row="1">
                         <xctk:WatermarkTextBox Watermark="User" Text="{Binding UserNickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200" Padding="5"/>
                         <xctk:WatermarkPasswordBox KeyUp="PreviewDown_Pass" x:Name="txt_pass_login" Watermark="Password" PreviewKeyDown="PreviewDown_Pass" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200" Padding="5" Margin="0,20,0,0"/>
-                        <CheckBox FontWeight="Bold" Click="ShowHidePass_Click" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding Path=RememberLogin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,20,0,0" Content="Remember me"/>
+                        <CheckBox FontWeight="Bold" Click="SaveLogin_Click" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="{Binding Path=RememberLogin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,20,0,0" Content="Remember me"/>
                     </StackPanel>
                     <StackPanel Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,60">
                         <Button  Click="VerifyLogin_Click" Width="130" Padding="3">Login</Button>
