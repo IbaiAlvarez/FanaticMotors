@@ -1,8 +1,10 @@
 ﻿using FanaticMotors.Data;
+using FanaticMotors.Database;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -35,6 +37,7 @@ namespace FanaticMotors.Windows
         #endregion
 
         #region Private Attributes
+        private MySQL _mySQL = new MySQL();
         private String _nickName = string.Empty;
 
         private String _pilotName = string.Empty;
@@ -45,12 +48,20 @@ namespace FanaticMotors.Windows
         private String _birthMonth = string.Empty;
         private String _birthYear = string.Empty;
 
+        private Pilot _selectedPilot = null;
+        private String _selectedStatus = null;
+
         private List<Pilot> _pilotList = new List<Pilot>();
         private ObservableCollection<Pilot> _pilotDirectory = new ObservableCollection<Pilot>();
+        private ObservableCollection<String> _statusDirectory = new ObservableCollection<String>();
+
+        private List<String> _statusList = new List<string> { "retired", "competing" };
+        private bool _focusableCombo = false;
 
         #endregion
 
         #region Public Attributes
+        public MySQL MySQL { get => _mySQL; set { _mySQL = value; OnPropertyChanged(); } }
         public string NickName { get => _nickName; set { _nickName = value; OnPropertyChanged(); } }
 
         public string BirthDay { get => _birthDay; set { _birthDay = value; OnPropertyChanged(); } }
@@ -63,6 +74,16 @@ namespace FanaticMotors.Windows
 
         public List<Pilot> PilotList { get => _pilotList; set { _pilotList = value; OnPropertyChanged(); } }
         public ObservableCollection<Pilot> PilotDirectory { get => _pilotDirectory; set { _pilotDirectory = value; OnPropertyChanged(); } }
+        public List<string> StatusList { get => _statusList; set { _statusList = value; OnPropertyChanged(); } }
+
+        public Pilot SelectedPilot { get => _selectedPilot; set { _selectedPilot = value; OnPropertyChanged(); if (_selectedPilot != null) { SelectedStatus = _selectedPilot.PilotStatus; } } }
+
+        public String SelectedStatus { get => _selectedStatus; set { _selectedStatus = value; OnPropertyChanged(); if (_selectedStatus != null) { SelectedPilot.PilotStatus = _selectedStatus; } } }
+
+        public ObservableCollection<string> StatusDirectory { get => _statusDirectory; set { _statusDirectory = value; OnPropertyChanged(); } }
+
+        public bool FocusableCombo { get => _focusableCombo; set { _focusableCombo = value; OnPropertyChanged(); } }
+
 
         #endregion
 
@@ -76,6 +97,8 @@ namespace FanaticMotors.Windows
             DataContext = this;
             InitializeComponent();
             this.NickName = user;
+            LoadPilots(); 
+            StatusDirectory = new ObservableCollection<String>(StatusList);
         }
 
         private void CheckNumber_KeyUp(object sender, KeyEventArgs e)
@@ -223,6 +246,36 @@ namespace FanaticMotors.Windows
 
                 MessageBox.Show(messageBoxText, caption, button, icon);
             }
+        }
+
+        private void LoadPilots()
+        {
+            try
+            {
+                String query = $"SELECT * FROM {MySQL.TABLE_PILOTS}; ";
+                DataTable dt = MySQL.MakeQuery(query);
+                PilotList.Clear();
+
+                foreach (DataRow dr in dt.Rows) 
+                {
+                    Pilot p = new Pilot(dr);
+                    PilotList.Add(p);
+                }
+
+                PilotDirectory = new ObservableCollection<Pilot>(PilotList);
+
+            }catch(Exception ex) { }
+
+        }
+
+        private void EditPilot_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ComboBoxFocus_Click(object sender, MouseButtonEventArgs e)
+        {
+            FocusableCombo = true;
         }
     }
 }

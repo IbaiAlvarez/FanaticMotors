@@ -23,9 +23,12 @@ namespace FanaticMotors.Data
         #endregion
 
         #region Private Attributes
+        private int _pilotId = 0;
         private String _pilotName = string.Empty;
         private String _pilotSurname = string.Empty;
+        private String _pilotFullName = string.Empty;
         private String _pilotNumber = string.Empty;
+        private String _pilotStatus = string.Empty;
 
         private String _birthDay = string.Empty;
         private String _birthMonth = string.Empty;
@@ -49,6 +52,12 @@ namespace FanaticMotors.Data
 
         public MySQL MySQL { get => _mySQL; set { _mySQL = value; OnPropertyChanged(); } }
 
+        public string PilotFullName { get => _pilotFullName; set { _pilotFullName = value; OnPropertyChanged(); } }
+
+        public string PilotStatus { get => _pilotStatus; set { _pilotStatus = value; OnPropertyChanged(); } }
+
+        public int PilotId { get => _pilotId; set { _pilotId = value; OnPropertyChanged(); } }
+
         #endregion
 
 
@@ -61,6 +70,17 @@ namespace FanaticMotors.Data
             PilotSurname = surname;
             PilotNumber = number;
             FullDate = year+"-"+month+"-"+day;
+        }
+
+        public Pilot(DataRow dr)
+        {
+            PilotId = Convert.ToInt32(dr["Pilot_Id"]);
+            PilotName = Convert.ToString(dr["Pilot_Name"]);
+            PilotSurname = Convert.ToString(dr["Pilot_Surname"]);
+            PilotFullName = PilotName+ " "+PilotSurname;
+            PilotNumber = Convert.ToString(dr["Pilot_Number"]);
+            FullDate = Convert.ToString(dr["Pilot_BirthDay"]);
+            PilotStatus = Convert.ToString(dr["Pilot_Status"]);
         }
 
         public bool InsertPilotData()
